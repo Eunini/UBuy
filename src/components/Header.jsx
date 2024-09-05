@@ -65,7 +65,7 @@ const Header = () => {
                 </button>
               ) : (
                 <>
-                  <NavLink className="genbtn" to="/login">
+                  <NavLink className="genbtn mx-3" to="/login">
                     Login
                   </NavLink>
                   <NavLink className="genbtn" to="/register">
