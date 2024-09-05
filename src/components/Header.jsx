@@ -77,8 +77,9 @@ const Header = () => {
             <li>
               <CartBtn />
             </li>
-            <li>
-              {currentUser && (
+          </ul>
+        </nav>
+        {currentUser && (
                 <div className="profile-image">
                   {currentUser?.photoURL ? (
                     <img src={currentUser.photoURL} className="profile-image" alt="Profile Image" />
@@ -89,9 +90,6 @@ const Header = () => {
                   )}
                 </div>
               )}
-            </li>
-          </ul>
-        </nav>
       </div>
     </nav>
   );
