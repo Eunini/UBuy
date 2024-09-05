@@ -9,8 +9,7 @@ const About = () => {
                     <div className="col-md-6">
                         <h1 className="text-primary fw-bold mb-4">About Us</h1>
                         <p className="lead mb-4">
-                            Lorem ipsum dolor sit amet consectetur adipisicing elit. Nemo molestiae earum rem doloremque, nihil delectus ullam error consectetur? Dicta, non exercitationem in consectetur totam dolorum at voluptate laudantium aliquam, officiis perspiciatis molestias reiciendis consequuntur ullam perferendis velit blanditiis distinctio assumenda a maxime reprehenderit atque. Nam eius rerum distinctio, a illo earum, optio molestias nostrum maxime quibusdam delectus, adipisci impedit? Nam corporis reiciendis minus quod eaque, laborum veritatis voluptatibus id maiores tempore accusantium recusandae perspiciatis, officia cum ad maxime fuga repellendus a magni consequatur. Unde adipisci hic provident est sint corporis, dolorem esse autem soluta molestiae optio quisquam eligendi obcaecati minima?
-                        </p>
+At UBuy, we're passionate about connecting people with the perfect phone to match their unique lifestyle. Our mission is to provide a seamless and enjoyable shopping experience, offering a wide range of high-quality phones from top brands at competitive prices. UBuy was founded by a team of tech enthusiasts who were frustrated with the traditional phone buying experience. We believed that buying a phone should be easy, convenient, and hassle-free. With years of experience in the industry, we set out to create a platform that would revolutionize the way people buy phones. </p>
                         <NavLink to="/contact" className="btn btn-outline-primary px-3">Contact Us</NavLink>
                     </div>
                     <div className="col-md-6 d-flex justify-content-center">
