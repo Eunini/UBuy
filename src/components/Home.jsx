@@ -11,7 +11,7 @@ const Home = () => {
         spaceBetween={50}
         slidesPerView={1}
         loop={true}
-        autoplay={{ delay: 5000 }}
+        autoplay={{ enabled: true, delay: 3000 }}
         pagination={{ clickable: true }}
       >
         <SwiperSlide>
