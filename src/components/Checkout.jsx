@@ -1,205 +1,392 @@
-import React from 'react'
-import { useSelector } from 'react-redux'
+import React, { useState } from 'react';
+import { useSelector } from 'react-redux';
+import { Link } from 'react-router-dom';
+import { 
+  ArrowLeftIcon, 
+  CreditCardIcon, 
+  ShieldCheckIcon,
+  CheckCircleIcon 
+} from '@heroicons/react/24/outline';
 
 const Checkout = () => {
-    const state = useSelector((state) => state.addItem)
+  const state = useSelector((state) => state.addItem);
+  const [formData, setFormData] = useState({
+    firstName: '',
+    lastName: '',
+    email: '',
+    address: '',
+    city: '',
+    state: '',
+    zipCode: '',
+    cardNumber: '',
+    expiryDate: '',
+    cvv: '',
+    nameOnCard: ''
+  });
+  const [isProcessing, setIsProcessing] = useState(false);
+  const [orderComplete, setOrderComplete] = useState(false);
 
-    var total = 0;
-    const itemList = (item) => {
-        total = total + item.price;
-        return (
-            <li className="list-group-item d-flex justify-content-between lh-sm">
-                <div>
-                    <h6 className="my-0">{item.title}</h6>
-                </div>
-                <span className="text-muted">${item.price}</span>
-            </li>
-        );
-    }
+  const handleInputChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value
+    });
+  };
 
+  const calculateSubtotal = () => {
+    return state.reduce((total, item) => total + (item.price * item.qty), 0);
+  };
+
+  const calculateTax = () => {
+    return calculateSubtotal() * 0.08;
+  };
+
+  const calculateTotal = () => {
+    return calculateSubtotal() + calculateTax();
+  };
+
+  const handleSubmit = async (e) => {
+    e.preventDefault();
+    setIsProcessing(true);
+    
+    // Simulate payment processing
+    setTimeout(() => {
+      setIsProcessing(false);
+      setOrderComplete(true);
+    }, 3000);
+  };
+
+  if (state.length === 0) {
     return (
-        <>
-            <div className="container my-5 p-3">
-                <div className="row g-5">
-                    <div className="col-md-5 col-lg-4 order-md-last">
-                        <h4 className="d-flex justify-content-between align-items-center mb-3">
-                            <span className="text-primary">Your cart</span>
-                            <span className="badge bg-primary rounded-pill">{state.length}</span>
-                        </h4>
-                        <ul className="list-group mb-3">
-                            {state.map(itemList)}
+      <div className="min-h-screen bg-gray-50 pt-20 pb-16">
+        <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8 text-center py-16">
+          <h2 className="text-3xl font-light text-gray-900 mb-4">No items to checkout</h2>
+          <p className="text-gray-600 mb-8">Your cart is empty. Add some items before proceeding to checkout.</p>
+          <Link
+            to="/products"
+            className="inline-flex items-center px-8 py-4 bg-blue-600 text-white rounded-full hover:bg-blue-700 transition-all duration-300 font-medium"
+          >
+            <ArrowLeftIcon className="w-5 h-5 mr-2" />
+            Continue Shopping
+          </Link>
+        </div>
+      </div>
+    );
+  }
 
-                            <li className="list-group-item d-flex justify-content-between">
-                                <span>Total (USD)</span>
-                                <strong>${total}</strong>
-                            </li>
-                        </ul>
-
-                        <form className="card p-2">
-                            <div className="input-group">
-                                <input type="text" className="form-control" placeholder="Promo code" />
-                                <button type="submit" className="btn btn-secondary">Redeem</button>
-                            </div>
-                        </form>
-                    </div>
-                    <div className="col-md-7 col-lg-8">
-                        <h4 className="mb-3">Billing address</h4>
-                        <form className="needs-validation" novalidate="">
-                            <div className="row g-3">
-                                <div className="col-sm-6">
-                                    <label htmlFor="firstName" className="form-label">First name</label>
-                                    <input type="text" className="form-control" id="firstName" placeholder="" value="" required="" />
-                                    <div className="invalid-feedback">
-                                        Valid first name is required.
-                                    </div>
-                                </div>
-
-                                <div className="col-sm-6">
-                                    <label htmlFor="lastName" className="form-label">Last name</label>
-                                    <input type="text" className="form-control" id="lastName" placeholder="" value="" required="" />
-                                    <div className="invalid-feedback">
-                                        Valid last name is required.
-                                    </div>
-                                </div>
-
-                                <div className="col-12">
-                                    <label htmlFor="username" className="form-label">Username</label>
-                                    <div className="input-group has-validation">
-                                        <span className="input-group-text">@</span>
-                                        <input type="text" className="form-control" id="username" placeholder="Username" required="" />
-                                        <div className="invalid-feedback">
-                                            Your username is required.
-                                        </div>
-                                    </div>
-                                </div>
-
-                                <div className="col-12">
-                                    <label htmlFor="email" className="form-label">Email <span className="text-muted">(Optional)</span></label>
-                                    <input type="email" className="form-control" id="email" placeholder="you@example.com" />
-                                    <div className="invalid-feedback">
-                                        Please enter a valid email address htmlFor shipping updates.
-                                    </div>
-                                </div>
-
-                                <div className="col-12">
-                                    <label htmlFor="address" className="form-label">Address</label>
-                                    <input type="text" className="form-control" id="address" placeholder="1234 Main St" required="" />
-                                    <div className="invalid-feedback">
-                                        Please enter your shipping address.
-                                    </div>
-                                </div>
-
-                                <div className="col-12">
-                                    <label htmlFor="address2" className="form-label">Address 2 <span className="text-muted">(Optional)</span></label>
-                                    <input type="text" className="form-control" id="address2" placeholder="Apartment or suite" />
-                                </div>
-
-                                <div className="col-md-5">
-                                    <label htmlFor="country" className="form-label">Country</label>
-                                    <select className="form-select" id="country" required="">
-                                        <option value="">Choose...</option>
-                                        <option>United States</option>
-                                    </select>
-                                    <div className="invalid-feedback">
-                                        Please select a valid country.
-                                    </div>
-                                </div>
-
-                                <div className="col-md-4">
-                                    <label htmlFor="state" className="form-label">State</label>
-                                    <select className="form-select" id="state" required="">
-                                        <option value="">Choose...</option>
-                                        <option>California</option>
-                                    </select>
-                                    <div className="invalid-feedback">
-                                        Please provide a valid state.
-                                    </div>
-                                </div>
-
-                                <div className="col-md-3">
-                                    <label htmlFor="zip" className="form-label">Zip</label>
-                                    <input type="text" className="form-control" id="zip" placeholder="" required="" />
-                                    <div className="invalid-feedback">
-                                        Zip code required.
-                                    </div>
-                                </div>
-                            </div>
-
-                            <hr className="my-4" />
-
-                            <div className="form-check">
-                                <input type="checkbox" className="form-check-input" id="same-address" />
-                                <label className="form-check-label" htmlFor="same-address">Shipping address is the same as my billing address</label>
-                            </div>
-
-                            <div className="form-check">
-                                <input type="checkbox" className="form-check-input" id="save-info" />
-                                <label className="form-check-label" htmlFor="save-info">Save this information htmlFor next time</label>
-                            </div>
-
-                            <hr className="my-4" />
-
-                            <h4 className="mb-3">Payment</h4>
-
-                            <div className="my-3">
-                                <div className="form-check">
-                                    <input id="credit" name="paymentMethod" type="radio" className="form-check-input" checked="" required="" />
-                                    <label className="form-check-label" htmlFor="credit">Credit card</label>
-                                </div>
-                                <div className="form-check">
-                                    <input id="debit" name="paymentMethod" type="radio" className="form-check-input" required="" />
-                                    <label className="form-check-label" htmlFor="debit">Debit card</label>
-                                </div>
-                                <div className="form-check">
-                                    <input id="paypal" name="paymentMethod" type="radio" className="form-check-input" required="" />
-                                    <label className="form-check-label" htmlFor="paypal">PayPal</label>
-                                </div>
-                            </div>
-
-                            <div className="row gy-3">
-                                <div className="col-md-6">
-                                    <label htmlFor="cc-name" className="form-label">Name on card</label>
-                                    <input type="text" className="form-control" id="cc-name" placeholder="" required="" />
-                                    <small className="text-muted">Full name as displayed on card</small>
-                                    <div className="invalid-feedback">
-                                        Name on card is required
-                                    </div>
-                                </div>
-
-                                <div className="col-md-6">
-                                    <label htmlFor="cc-number" className="form-label">Credit card number</label>
-                                    <input type="text" className="form-control" id="cc-number" placeholder="" required="" />
-                                    <div className="invalid-feedback">
-                                        Credit card number is required
-                                    </div>
-                                </div>
-
-                                <div className="col-md-3">
-                                    <label htmlFor="cc-expiration" className="form-label">Expiration</label>
-                                    <input type="text" className="form-control" id="cc-expiration" placeholder="" required="" />
-                                    <div className="invalid-feedback">
-                                        Expiration date required
-                                    </div>
-                                </div>
-
-                                <div className="col-md-3">
-                                    <label htmlFor="cc-cvv" className="form-label">CVV</label>
-                                    <input type="text" className="form-control" id="cc-cvv" placeholder="" required="" />
-                                    <div className="invalid-feedback">
-                                        Security code required
-                                    </div>
-                                </div>
-                            </div>
-
-                            <hr className="my-4" />
-
-                            <button className="w-100 btn btn-primary btn-lg" type="submit">Continue to checkout</button>
-                        </form>
-                    </div>
-                </div>
+  if (orderComplete) {
+    return (
+      <div className="min-h-screen bg-gray-50 pt-20 pb-16">
+        <div className="max-w-2xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="bg-white rounded-3xl p-8 text-center">
+            <div className="w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+              <CheckCircleIcon className="w-8 h-8 text-green-600" />
             </div>
-        </>
-    )
-}
+            <h2 className="text-3xl font-light text-gray-900 mb-4">Order Complete!</h2>
+            <p className="text-gray-600 mb-8">
+              Thank you for your purchase. Your order has been successfully placed and you will receive a confirmation email shortly.
+            </p>
+            <div className="space-y-3">
+              <Link
+                to="/products"
+                className="w-full bg-blue-600 text-white py-4 rounded-xl hover:bg-blue-700 transition-all duration-300 font-medium text-center block"
+              >
+                Continue Shopping
+              </Link>
+              <Link
+                to="/"
+                className="w-full border border-gray-300 text-gray-700 py-4 rounded-xl hover:border-gray-400 transition-all duration-300 font-medium text-center block"
+              >
+                Back to Home
+              </Link>
+            </div>
+          </div>
+        </div>
+      </div>
+    );
+  }
 
-export default Checkout
+  return (
+    <div className="min-h-screen bg-gray-50 pt-20 pb-16">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        {/* Header */}
+        <div className="mb-8">
+          <div className="flex items-center gap-4 mb-4">
+            <Link
+              to="/cart"
+              className="p-2 text-gray-400 hover:text-gray-600 transition-colors"
+            >
+              <ArrowLeftIcon className="w-6 h-6" />
+            </Link>
+            <h1 className="text-3xl font-light text-gray-900">Checkout</h1>
+          </div>
+        </div>
+
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+          {/* Checkout Form */}
+          <div className="space-y-8">
+            {/* Contact Information */}
+            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+              <h3 className="text-xl font-semibold text-gray-900 mb-6">Contact Information</h3>
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                <div>
+                  <label htmlFor="firstName" className="block text-sm font-medium text-gray-700 mb-2">
+                    First name
+                  </label>
+                  <input
+                    type="text"
+                    id="firstName"
+                    name="firstName"
+                    value={formData.firstName}
+                    onChange={handleInputChange}
+                    required
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="lastName" className="block text-sm font-medium text-gray-700 mb-2">
+                    Last name
+                  </label>
+                  <input
+                    type="text"
+                    id="lastName"
+                    name="lastName"
+                    value={formData.lastName}
+                    onChange={handleInputChange}
+                    required
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                  />
+                </div>
+                <div className="sm:col-span-2">
+                  <label htmlFor="email" className="block text-sm font-medium text-gray-700 mb-2">
+                    Email address
+                  </label>
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    value={formData.email}
+                    onChange={handleInputChange}
+                    required
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                  />
+                </div>
+              </div>
+            </div>
+
+            {/* Shipping Address */}
+            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+              <h3 className="text-xl font-semibold text-gray-900 mb-6">Shipping Address</h3>
+              <div className="space-y-4">
+                <div>
+                  <label htmlFor="address" className="block text-sm font-medium text-gray-700 mb-2">
+                    Street address
+                  </label>
+                  <input
+                    type="text"
+                    id="address"
+                    name="address"
+                    value={formData.address}
+                    onChange={handleInputChange}
+                    required
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                  />
+                </div>
+                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                  <div>
+                    <label htmlFor="city" className="block text-sm font-medium text-gray-700 mb-2">
+                      City
+                    </label>
+                    <input
+                      type="text"
+                      id="city"
+                      name="city"
+                      value={formData.city}
+                      onChange={handleInputChange}
+                      required
+                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="state" className="block text-sm font-medium text-gray-700 mb-2">
+                      State
+                    </label>
+                    <input
+                      type="text"
+                      id="state"
+                      name="state"
+                      value={formData.state}
+                      onChange={handleInputChange}
+                      required
+                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="zipCode" className="block text-sm font-medium text-gray-700 mb-2">
+                      ZIP code
+                    </label>
+                    <input
+                      type="text"
+                      id="zipCode"
+                      name="zipCode"
+                      value={formData.zipCode}
+                      onChange={handleInputChange}
+                      required
+                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            {/* Payment Information */}
+            <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+              <div className="flex items-center gap-3 mb-6">
+                <CreditCardIcon className="w-6 h-6 text-gray-600" />
+                <h3 className="text-xl font-semibold text-gray-900">Payment Information</h3>
+                <ShieldCheckIcon className="w-5 h-5 text-green-600" />
+              </div>
+              <div className="space-y-4">
+                <div>
+                  <label htmlFor="nameOnCard" className="block text-sm font-medium text-gray-700 mb-2">
+                    Name on card
+                  </label>
+                  <input
+                    type="text"
+                    id="nameOnCard"
+                    name="nameOnCard"
+                    value={formData.nameOnCard}
+                    onChange={handleInputChange}
+                    required
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                  />
+                </div>
+                <div>
+                  <label htmlFor="cardNumber" className="block text-sm font-medium text-gray-700 mb-2">
+                    Card number
+                  </label>
+                  <input
+                    type="text"
+                    id="cardNumber"
+                    name="cardNumber"
+                    value={formData.cardNumber}
+                    onChange={handleInputChange}
+                    placeholder="1234 5678 9012 3456"
+                    required
+                    className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                  />
+                </div>
+                <div className="grid grid-cols-2 gap-4">
+                  <div>
+                    <label htmlFor="expiryDate" className="block text-sm font-medium text-gray-700 mb-2">
+                      Expiry date
+                    </label>
+                    <input
+                      type="text"
+                      id="expiryDate"
+                      name="expiryDate"
+                      value={formData.expiryDate}
+                      onChange={handleInputChange}
+                      placeholder="MM/YY"
+                      required
+                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                    />
+                  </div>
+                  <div>
+                    <label htmlFor="cvv" className="block text-sm font-medium text-gray-700 mb-2">
+                      CVV
+                    </label>
+                    <input
+                      type="text"
+                      id="cvv"
+                      name="cvv"
+                      value={formData.cvv}
+                      onChange={handleInputChange}
+                      placeholder="123"
+                      required
+                      className="w-full px-4 py-3 border border-gray-300 rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
+                    />
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          {/* Order Summary */}
+          <div className="lg:col-span-1">
+            <div className="sticky top-24">
+              <div className="bg-white rounded-2xl p-6 shadow-sm border border-gray-100">
+                <h3 className="text-xl font-semibold text-gray-900 mb-6">Order Summary</h3>
+                
+                {/* Order Items */}
+                <div className="space-y-4 mb-6">
+                  {state.map((item) => (
+                    <div key={item.id} className="flex items-center gap-4">
+                      <div className="w-16 h-16 bg-gray-50 rounded-lg flex items-center justify-center overflow-hidden">
+                        <img
+                          src={item.img}
+                          alt={item.title}
+                          className="w-full h-full object-contain"
+                        />
+                      </div>
+                      <div className="flex-1">
+                        <h4 className="font-medium text-gray-900">{item.title}</h4>
+                        <p className="text-sm text-gray-600">Qty: {item.qty}</p>
+                      </div>
+                      <div className="text-right">
+                        <p className="font-medium text-gray-900">
+                          ${(item.price * item.qty).toFixed(2)}
+                        </p>
+                      </div>
+                    </div>
+                  ))}
+                </div>
+
+                {/* Price Breakdown */}
+                <div className="space-y-3 mb-6 pt-4 border-t border-gray-200">
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Subtotal</span>
+                    <span className="font-medium">${calculateSubtotal().toFixed(2)}</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Shipping</span>
+                    <span className="font-medium text-green-600">Free</span>
+                  </div>
+                  <div className="flex justify-between">
+                    <span className="text-gray-600">Tax</span>
+                    <span className="font-medium">${calculateTax().toFixed(2)}</span>
+                  </div>
+                  <div className="flex justify-between text-lg font-semibold border-t border-gray-200 pt-3">
+                    <span>Total</span>
+                    <span>${calculateTotal().toFixed(2)}</span>
+                  </div>
+                </div>
+
+                {/* Place Order Button */}
+                <form onSubmit={handleSubmit}>
+                  <button
+                    type="submit"
+                    disabled={isProcessing}
+                    className={`w-full py-4 rounded-xl font-medium transition-all duration-300 ${
+                      isProcessing
+                        ? 'bg-gray-400 text-white cursor-not-allowed'
+                        : 'bg-blue-600 text-white hover:bg-blue-700'
+                    }`}
+                  >
+                    {isProcessing ? 'Processing...' : `Place Order • $${calculateTotal().toFixed(2)}`}
+                  </button>
+                </form>
+
+                <p className="text-xs text-gray-500 text-center mt-4">
+                  Your payment information is secure and encrypted
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default Checkout;

@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
-import { NavLink, useNavigate } from 'react-router-dom';
+import { NavLink } from 'react-router-dom';
+
 const Contact = () => {
   const [showModal, setShowModal] = useState(false);
   const [fullName, setFullName] = useState('');
@@ -20,12 +21,7 @@ const Contact = () => {
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    sendEmail(fullName, email, message);
-  };
-
-  const sendEmail = (fullName, email, message) => {
-    console.log('Sending email...');
-    // ... (rest of the email sending logic)
+    // Your email sending logic here
     setShowModal(true);
   };
 
@@ -34,68 +30,72 @@ const Contact = () => {
   };
 
   return (
-    <div>
-      <div className="container mb-5 p-3">
-        <div className="row">
-          <div className="col-12 text-center py-4 my-4">
-            <h1>Have Some Question?</h1>
-            <hr />
-          </div>
+    <div className="container mx-auto px-4 py-8">
+      <div className="text-center mb-8">
+        <h1 className="text-4xl font-bold">Have Some Questions?</h1>
+        <hr className="my-4" />
+      </div>
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-8 items-center">
+        <div>
+          <img src="/assets/images/contact.png" alt="Contact Us" className="w-full h-auto rounded-lg" />
         </div>
-        <div className="row">
-          <div className="col-md-5 d-flex justify-content-center my-2">
-            <img src="/assets/images/contact.png" alt="Contact Us" height="300px" width="300px" />
-          </div>
-          <div className="col-md-6 my-4">
-            <form onSubmit={handleSubmit}>
-              <div class="mb-3">
-                <label for="exampleForm" class="form-label">Full Name</label>
-                <input
-                  type="text"
-                  class="form-control"
-                  id="exampleForm"
-                  placeholder="John Smith"
-                  value={fullName}
-                  onChange={handleFullNameChange}
-                />
-              </div>
-              <div class="mb-3">
-                <label for="exampleFormControlInput1" class="form-label">Email address</label>
-                <input
-                  type="email"
-                  class="form-control"
-                  id="exampleFormControlInput1"
-                  placeholder="name@example.com"
-                  value={email}
-                  onChange={handleEmailChange}
-                />
-              </div>
-              <div class="mb-3">
-                <label for="exampleFormControlTextarea1" class="form-label">Example textarea</label>
-                <textarea
-                  class="form-control"
-                  id="exampleFormControlTextarea1"
-                  rows="5"
-                  value={message}
-                  onChange={handleMessageChange}
-                ></textarea>
-              </div>
-              <button type="submit" class="btn btn-outline-primary">
-                Send Message
-              </button>
-            </form>
-          </div>
+        <div>
+          <form onSubmit={handleSubmit}>
+            <div className="mb-4">
+              <label htmlFor="fullName" className="label">
+                <span className="label-text">Full Name</span>
+              </label>
+              <input
+                type="text"
+                id="fullName"
+                className="input input-bordered w-full"
+                placeholder="John Smith"
+                value={fullName}
+                onChange={handleFullNameChange}
+              />
+            </div>
+            <div className="mb-4">
+              <label htmlFor="email" className="label">
+                <span className="label-text">Email address</span>
+              </label>
+              <input
+                type="email"
+                id="email"
+                className="input input-bordered w-full"
+                placeholder="name@example.com"
+                value={email}
+                onChange={handleEmailChange}
+              />
+            </div>
+            <div className="mb-4">
+              <label htmlFor="message" className="label">
+                <span className="label-text">Message</span>
+              </label>
+              <textarea
+                id="message"
+                className="textarea textarea-bordered w-full"
+                rows="5"
+                value={message}
+                onChange={handleMessageChange}
+              ></textarea>
+            </div>
+            <button type="submit" className="btn btn-primary">
+              Send Message
+            </button>
+          </form>
         </div>
       </div>
 
       {showModal && (
-        <div className="modal-overlay" onClick={closeModal}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <h2>Success!</h2>
-            <p>Your message has been sent successfully.</p>
-            <NavLink className="genbtn" to="/home">
-                    ok
-                  </NavLink>
+        <div className="modal modal-open">
+          <div className="modal-box">
+            <h3 className="font-bold text-lg">Success!</h3>
+            <p className="py-4">Your message has been sent successfully.</p>
+            <div className="modal-action">
+              <NavLink to="/" className="btn" onClick={closeModal}>
+                OK
+              </NavLink>
+            </div>
           </div>
         </div>
       )}

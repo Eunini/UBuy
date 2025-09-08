@@ -1,4 +1,4 @@
-import './App.css';
+// import './App.css'; // Commented out to avoid conflicts with Tailwind CSS
 import Header from './components/Header';
 import Footer from './components/Footer';
 import Home from './components/Home';
